@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/types.ts","./src/vite-env.d.ts","./src/components/countymap.tsx","./src/components/heatmap.tsx","./src/components/legend.tsx","./src/components/needpanel.tsx","./src/components/zipmarkers.tsx","./src/data/samplezips.ts","./src/data/zipmetrics.ts","./src/lib/score.ts"],"errors":true,"version":"5.7.3"}
