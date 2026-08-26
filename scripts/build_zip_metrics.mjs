@@ -1,6 +1,5 @@
 /**
- * Placeholder ETL entrypoint.
- * Next: pull Census ACS (vehicle access), USDA food-access / retailer
- * proximity, aggregate to ZIP, emit src/data/zipMetrics.ts or a JSON feed.
+ * Placeholder for ZIP food-access metrics.
+ * Sources later: Census ACS, USDA food access / retailers.
  */
 console.log('TODO: build ZIP food-access metrics from public sources');

@@ -1,9 +1,14 @@
 {
   "name": "hungerview",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "HungerView USA — county food insecurity map for state and local programs",
+  "description": "HungerView USA — county food insecurity map",
+  "homepage": "https://alhaddia.github.io/hungerview/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alhaddia/hungerview.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

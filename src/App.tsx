@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import hdpulse from './data/hdpulseFoodInsecurity2023.json';
 import type { HdpulseDataset } from './types';
 import { NeedMap, type MapLayer } from './components/NeedMap';
@@ -8,12 +8,40 @@ import { averageStates, CONTIGUOUS_STATE_FIPS } from './lib/aggregate';
 const data = hdpulse as HdpulseDataset;
 const MI_PREFIX = '26';
 
+function readParams(): { scope: Scope; selectedId: string | null } {
+  const params = new URLSearchParams(window.location.search);
+  const scope = params.get('scope') === 'MI' ? 'MI' : 'US';
+  const place = params.get('place');
+  return {
+    scope,
+    selectedId: place && /^\d{2,5}$/.test(place) ? place : null
+  };
+}
+
+function writeParams(scope: Scope, selectedId: string | null) {
+  const params = new URLSearchParams();
+  if (scope === 'MI') params.set('scope', 'MI');
+  if (selectedId) params.set('place', selectedId);
+  const qs = params.toString();
+  const next = `${window.location.pathname}${qs ? `?${qs}` : ''}`;
+  window.history.replaceState(null, '', next);
+}
+
 export default function App() {
-  const [scope, setScope] = useState<Scope>('US');
+  const initial = readParams();
+  const [scope, setScope] = useState<Scope>(initial.scope);
   const [minPercent, setMinPercent] = useState(10);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [mapLayer, setMapLayer] = useState<MapLayer>('state');
+  const [selectedId, setSelectedId] = useState<string | null>(initial.selectedId);
+  const [mapLayer, setMapLayer] = useState<MapLayer>(
+    initial.scope === 'MI' || (initial.selectedId?.length ?? 0) === 5
+      ? 'county'
+      : 'state'
+  );
   const [nationalFitKey, setNationalFitKey] = useState(0);
+
+  useEffect(() => {
+    writeParams(scope, selectedId);
+  }, [scope, selectedId]);
 
   const allCounties = useMemo(
     () =>
@@ -43,6 +71,11 @@ export default function App() {
     }
   };
 
+  const onSelect = (id: string) => {
+    setSelectedId(id);
+    if (id.length === 5) setMapLayer('county');
+  };
+
   return (
     <div className="app">
       <NeedPanel
@@ -52,7 +85,7 @@ export default function App() {
         minPercent={minPercent}
         onMinPercent={setMinPercent}
         selectedId={selectedId}
-        onSelect={setSelectedId}
+        onSelect={onSelect}
         counties={counties}
         states={states}
         year={data.year}
@@ -61,7 +94,7 @@ export default function App() {
         <NeedMap
           counties={scope === 'MI' ? counties : allCounties}
           selectedId={selectedId}
-          onSelect={(id) => setSelectedId(id)}
+          onSelect={(id) => onSelect(id)}
           onLayerChange={setMapLayer}
           forceCounty={scope === 'MI'}
           focusStateFips={scope === 'MI' ? MI_PREFIX : null}

@@ -1,6 +1,7 @@
 import type { CountyFoodInsecurity } from '../types';
 import type { StateFoodInsecurity } from '../lib/aggregate';
 import type { MapLayer } from './NeedMap';
+import { exportCountiesCsv, exportStatesCsv } from '../lib/exportCsv';
 import { foodInsecurityBand, foodInsecurityColor } from '../lib/score';
 
 export type Scope = 'MI' | 'US';
@@ -18,13 +19,18 @@ type Props = {
   year: number;
 };
 
-const PROGRAM_FEATURES = [
-  'State filter with a minimum rate cutoff',
-  'CSV export of priority counties',
-  'Pantry / WIC / SNAP site overlay',
-  'Year-over-year comparison',
-  'ZIP view for grocery access and vehicle gaps',
-  'Printable map for briefings'
+const SHIPPED = [
+  'Michigan / US toggle',
+  'Min-rate filter and ranked list',
+  'CSV export',
+  'Link to a selected place'
+];
+
+const NEXT_UP = [
+  'Pantry / WIC / SNAP overlay',
+  'Year-over-year',
+  'ZIP grocery access view',
+  'Printable map'
 ];
 
 export function NeedPanel({
@@ -50,14 +56,25 @@ export function NeedPanel({
     .filter((r) => r.percent >= minPercent)
     .sort((a, b) => b.percent - a.percent);
 
+  const onExport = () => {
+    if (listMode === 'state') {
+      exportStatesCsv(rankedStates, { year, minPercent });
+      return;
+    }
+    exportCountiesCsv(rankedCounties, {
+      year,
+      minPercent,
+      scope: scope === 'MI' ? 'MI' : 'US'
+    });
+  };
+
   return (
     <aside className="panel">
       <header className="panel-header">
         <p className="brand">HungerView USA</p>
-        <h1>Where food insecurity hits hardest</h1>
+        <h1>County food insecurity</h1>
         <p className="lede">
-          County food insecurity rates for state and local programs — find high-need
-          areas and prioritize outreach.
+          HDPulse rates by county. Filter, compare, and export for planning.
         </p>
       </header>
 
@@ -81,12 +98,11 @@ export function NeedPanel({
       <div className="layer-hint">
         {listMode === 'state' ? (
           <>
-            Showing <strong>state averages</strong>. Zoom in (or click a state) for
-            county-by-county.
+            <strong>State averages</strong>. Zoom in or click a state for counties.
           </>
         ) : (
           <>
-            Showing <strong>counties</strong>
+            <strong>Counties</strong>
             {scope === 'US' ? '. Zoom out for state averages.' : '.'}
           </>
         )}
@@ -125,10 +141,15 @@ export function NeedPanel({
       </div>
 
       <div className="list-head">
-        <h2>{listMode === 'state' ? 'States by need' : 'Counties by need'}</h2>
-        <span className="muted">
-          {listMode === 'state' ? rankedStates.length : rankedCounties.length} shown
-        </span>
+        <div className="list-head-title">
+          <h2>{listMode === 'state' ? 'States by need' : 'Counties by need'}</h2>
+          <span className="muted">
+            {listMode === 'state' ? rankedStates.length : rankedCounties.length} shown
+          </span>
+        </div>
+        <button type="button" className="export-btn" onClick={onExport}>
+          Export CSV
+        </button>
       </div>
 
       <ol className="rank-list">
@@ -172,17 +193,23 @@ export function NeedPanel({
       </ol>
 
       <section className="roadmap">
-        <h2>Ideas for program use</h2>
+        <h2>Included</h2>
         <ul>
-          {PROGRAM_FEATURES.map((item) => (
+          {SHIPPED.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+        <h2 className="roadmap-next">Ideas</h2>
+        <ul>
+          {NEXT_UP.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
       </section>
 
       <p className="footnote">
-        HDPulse / NIMHD county food insecurity ({year}), Feeding America Map the Meal Gap.
-        State figures average the counties in this export (not population-weighted).
+        HDPulse / NIMHD ({year}), Feeding America Map the Meal Gap. State numbers are a
+        simple average of counties, not population-weighted.
       </p>
     </aside>
   );

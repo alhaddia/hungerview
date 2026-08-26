@@ -136,8 +136,14 @@ body,
 .list-head {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
+}
+
+.list-head-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .list-head h2,
@@ -146,6 +152,28 @@ body,
   font-family: "Fraunces", Georgia, serif;
   font-size: 1.05rem;
   font-weight: 650;
+}
+
+.roadmap-next {
+  margin-top: 12px !important;
+}
+
+.export-btn {
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.export-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .rank-list {

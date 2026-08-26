@@ -1,24 +1,37 @@
 # HungerView USA
 
-Interactive map of food insecurity rates for state and local program planning.
+County food insecurity map (US / Michigan).
+
+Demo: [alhaddia.github.io/hungerview](https://alhaddia.github.io/hungerview/)
+
+## Features
+
+- MI or US view
+- Zoom for counties vs state averages
+- Filter by minimum rate
+- Export CSV
+- Link to a place: `?scope=MI&place=26163`
 
 ## Data
 
-County rates come from an NIMHD HDPulse export (`data/HDPulse_data_export.csv`), based on Feeding America Map the Meal Gap (2023).
+HDPulse / NIMHD county rates (2023), Feeding America Map the Meal Gap.  
+`data/HDPulse_data_export.csv`
 
-Zoomed out, the map shows state averages (simple average of county rates). Zoom in for county detail. Michigan opens at the county level.
+State averages = mean of county rates (not population-weighted).
 
-## Setup
+## Run
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Deploy
+```bash
+npm run build
+```
 
-Static Vite build (`npm run build` → `dist`). GitHub Pages is wired through `.github/workflows/deploy-pages.yml`.
+GitHub Pages deploys from `main`.
 
 ## Citation
 
-HDPulse: An Ecosystem of Health Disparities and Specific Populations Health Resources. National Institute on Minority Health and Health Disparities. https://hdpulse.nimhd.nih.gov/
+HDPulse. National Institute on Minority Health and Health Disparities. https://hdpulse.nimhd.nih.gov/
