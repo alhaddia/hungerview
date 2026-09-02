@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { CountyFoodInsecurity } from '../types';
 import type { StateFoodInsecurity } from '../lib/aggregate';
 import type { MapLayer } from './NeedMap';
@@ -23,14 +24,14 @@ const SHIPPED = [
   'Michigan / US toggle',
   'Min-rate filter and ranked list',
   'CSV export',
-  'Link to a selected place'
+  'Shareable link to a place',
+  'Print-friendly view'
 ];
 
 const NEXT_UP = [
   'Pantry / WIC / SNAP overlay',
   'Year-over-year',
-  'ZIP grocery access view',
-  'Printable map'
+  'ZIP grocery access view'
 ];
 
 export function NeedPanel({
@@ -45,6 +46,7 @@ export function NeedPanel({
   states,
   year
 }: Props) {
+  const [copied, setCopied] = useState(false);
   const listMode = scope === 'MI' || mapLayer === 'county' ? 'county' : 'state';
 
   const rankedCounties = [...counties]
@@ -66,6 +68,17 @@ export function NeedPanel({
       minPercent,
       scope: scope === 'MI' ? 'MI' : 'US'
     });
+  };
+
+  const onCopyLink = async () => {
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt('Copy this link:', url);
+    }
   };
 
   return (
@@ -147,9 +160,14 @@ export function NeedPanel({
             {listMode === 'state' ? rankedStates.length : rankedCounties.length} shown
           </span>
         </div>
-        <button type="button" className="export-btn" onClick={onExport}>
-          Export CSV
-        </button>
+        <div className="list-actions">
+          <button type="button" className="export-btn" onClick={onCopyLink}>
+            {copied ? 'Link copied' : 'Copy link'}
+          </button>
+          <button type="button" className="export-btn" onClick={onExport}>
+            Export CSV
+          </button>
+        </div>
       </div>
 
       <ol className="rank-list">

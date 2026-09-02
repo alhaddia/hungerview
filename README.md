@@ -10,7 +10,9 @@ Demo: [alhaddia.github.io/hungerview](https://alhaddia.github.io/hungerview/)
 - Zoom for counties vs state averages
 - Filter by minimum rate
 - Export CSV
+- Copy link to current view
 - Link to a place: `?scope=MI&place=26163`
+- Print-friendly layout
 
 ## Data
 
@@ -28,6 +30,7 @@ npm run dev
 
 ```bash
 npm run build
+npm test
 ```
 
 GitHub Pages deploys from `main`.

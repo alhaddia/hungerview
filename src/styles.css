@@ -140,6 +140,12 @@ body,
   gap: 8px;
 }
 
+.list-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
 .list-head-title {
   display: flex;
   flex-direction: column;
@@ -301,5 +307,57 @@ body,
     top: auto;
     bottom: 14px;
     border-radius: 12px;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .app {
+    display: block;
+    height: auto;
+  }
+
+  .panel {
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    max-height: none;
+    overflow: visible;
+    page-break-after: always;
+  }
+
+  .scope-toggle,
+  .filter input,
+  .export-btn,
+  .roadmap {
+    display: none;
+  }
+
+  .rank-list button {
+    border: none;
+    background: transparent;
+    padding: 4px 0;
+    pointer-events: none;
+    transform: none;
+  }
+
+  .map-wrap {
+    min-height: 70vh;
+    page-break-inside: avoid;
+  }
+
+  .map {
+    min-height: 70vh;
+    border: 1px solid var(--line);
+  }
+
+  .map-chip {
+    position: static;
+    margin: 10px 0 0;
+    box-shadow: none;
+    border-radius: 8px;
   }
 }

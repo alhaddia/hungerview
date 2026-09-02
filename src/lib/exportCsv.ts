@@ -1,17 +1,9 @@
 import type { CountyFoodInsecurity } from '../types';
 import type { StateFoodInsecurity } from './aggregate';
+import { rowsToCsv } from './csv';
 
-function downloadCsv(filename: string, rows: string[][]) {
-  const body = rows
-    .map((row) =>
-      row
-        .map((cell) => {
-          const s = String(cell);
-          return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-        })
-        .join(',')
-    )
-    .join('\n');
+function downloadCsv(filename: string, rows: (string | number)[][]) {
+  const body = rowsToCsv(rows);
   const blob = new Blob([body], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -25,7 +17,7 @@ export function exportCountiesCsv(
   counties: CountyFoodInsecurity[],
   opts: { year: number; minPercent: number; scope: string }
 ) {
-  const rows: string[][] = [
+  const rows: (string | number)[][] = [
     ['name', 'fips', 'food_insecurity_percent', 'year', 'scope', 'min_percent_filter']
   ];
   for (const c of counties) {
@@ -46,7 +38,7 @@ export function exportStatesCsv(
   states: StateFoodInsecurity[],
   opts: { year: number; minPercent: number }
 ) {
-  const rows: string[][] = [
+  const rows: (string | number)[][] = [
     [
       'name',
       'fips',
